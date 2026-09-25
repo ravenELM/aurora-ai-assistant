@@ -1,0 +1,41 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1790341155355,
+      "tag": "0000_restore_grants",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790341448283,
+      "tag": "0001_avatars_policies",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1790342654843,
+      "tag": "0002_bind_avatar_read_to_owner",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1790342802176,
+      "tag": "0003_attachments_bucket_policies",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1790352418897,
+      "tag": "0004_user_credits",
+      "breakpoints": true
+    }
+  ]
+}

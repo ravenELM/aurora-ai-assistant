@@ -1,0 +1,2 @@
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.conversations, public.memories, public.messages, public.plugin_connections, public.profiles, public.user_settings TO authenticated;
+GRANT ALL ON public.conversations, public.memories, public.messages, public.plugin_connections, public.profiles, public.user_settings TO service_role;
