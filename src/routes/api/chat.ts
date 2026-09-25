@@ -152,7 +152,7 @@ export const Route = createFileRoute("/api/chat")({
 
         const { data: creditRows } = await supabase.rpc("get_credits");
         const credit = Array.isArray(creditRows) ? creditRows[0] : null;
-        const baseCost = creditCost(model === "fast" ? "fast" : "smart", 0, false);
+        const baseCost = 0.01;
         if (credit && Number(credit.balance) < baseCost) {
           const lines = [
             { type: "error", code: "out_of_credits", message: "You're out of credits. Upgrade your plan or wait for your daily refill." },
@@ -428,7 +428,14 @@ export const Route = createFileRoute("/api/chat")({
                   .eq("id", conversationId);
               }
 
-              const cost = creditCost(model === "fast" ? "fast" : "smart", toolParts.length, Boolean(imageUrl));
+              let inTok = 0, outTok = 0;
+              try {
+                const u = await result.totalUsage;
+                inTok = u?.inputTokens ?? 0;
+                outTok = u?.outputTokens ?? 0;
+              } catch { /* usage unavailable */ }
+              if (!inTok && !outTok) outTok = Math.ceil(assistantText.length / 4);
+              const cost = creditCost(model === "fast" ? "fast" : "smart", toolParts.length, Boolean(imageUrl), inTok, outTok);
               const { data: left } = await supabase.rpc("spend_credits", { _amount: cost });
               send({ type: "credits", spent: cost, balance: left ?? null });
               send({ type: "done", messageId: saved?.id ?? null });
@@ -504,8 +511,17 @@ function shrinkToolOutput(value: unknown): unknown {
   return { truncated: true, data: text.slice(0, MAX_TOTAL) };
 }
 
-// Credit pricing: quick reply 1, smart reply 2, each app/tool call +0.5, image +3.
-function creditCost(kind: "fast" | "smart", toolCalls: number, image: boolean): number {
-  const c = (kind === "fast" ? 1 : 2) + Math.min(toolCalls, 10) * 0.5 + (image ? 3 : 0);
-  return Math.min(c, 20);
+// Token-based pricing (credits per 1k tokens). Smart costs 2x quick.
+// Each app/tool call +0.1, image +2. Minimum 0.01, max 20 per message.
+function creditCost(
+  kind: "fast" | "smart",
+  toolCalls: number,
+  image: boolean,
+  inputTokens = 0,
+  outputTokens = 0,
+): number {
+  const mult = kind === "fast" ? 1 : 2;
+  const tokens = (inputTokens / 1000) * 0.02 + (outputTokens / 1000) * 0.1;
+  const c = tokens * mult + Math.min(toolCalls, 10) * 0.1 + (image ? 2 : 0);
+  return Math.min(Math.max(Math.round(c * 100) / 100, 0.01), 20);
 }
