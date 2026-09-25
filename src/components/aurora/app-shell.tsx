@@ -286,8 +286,8 @@ export function AppShell({
       {menuConv && (
         <div className="fixed inset-0 z-[70]">
           <button type="button" aria-label="Close chat actions" className="absolute inset-0 bg-background/60" onClick={() => setMenuConv(null)} />
-          <div className="absolute inset-x-3 bottom-[max(env(safe-area-inset-bottom),0.75rem)] rounded-3xl border border-border bg-popover p-1.5 shadow-2xl animate-scale-in md:inset-x-auto md:bottom-auto md:left-1/2 md:top-1/2 md:w-72 md:-translate-x-1/2 md:-translate-y-1/2">
-            <p className="truncate px-3 pb-0.5 pt-1.5 text-[11px] text-muted-foreground">{menuConv.title}</p>
+          <div className="absolute inset-x-3 bottom-[max(env(safe-area-inset-bottom),0.75rem)] rounded-2xl border border-border bg-popover p-1 shadow-2xl animate-scale-in md:inset-x-auto md:bottom-auto md:left-1/2 md:top-1/2 md:w-64 md:-translate-x-1/2 md:-translate-y-1/2">
+            <p className="truncate px-2.5 pb-0.5 pt-1 text-[10px] text-muted-foreground">{menuConv.title}</p>
             <ChatAction icon={Share2} label="Share" onClick={() => void shareChat(menuConv)} />
             <ChatAction icon={Pencil} label="Rename" onClick={() => { setRenameValue(menuConv.title); setRenameConv(menuConv); setMenuConv(null); }} />
             <div className="my-1 border-t border-border" />
@@ -370,7 +370,7 @@ function SideItem({ label, icon: Icon, trailing, onClick }: { label: string; ico
 }
 
 function ChatAction({ icon: Icon, label, onClick, destructive }: { icon: typeof Images; label: string; onClick: () => void; destructive?: boolean }) {
-  return <button type="button" onClick={onClick} className={cn("flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-left text-[13px] hover:bg-accent", destructive && "text-destructive")}><Icon className="size-3.5" />{label}</button>;
+  return <button type="button" onClick={onClick} className={cn("flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left text-xs hover:bg-accent", destructive && "text-destructive")}><Icon className="size-3.5" />{label}</button>;
 }
 
 function ProfileLink({ icon: Icon, label, to, close, trailing }: { icon: typeof Images; label: string; to?: "/settings"; close?: () => void; trailing?: boolean }) {
