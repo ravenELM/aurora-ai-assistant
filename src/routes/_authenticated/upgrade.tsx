@@ -90,7 +90,7 @@ function UpgradePage() {
 
         <div className="mt-8 rounded-3xl bg-secondary p-5 text-sm">
           <p className="font-medium">
-            {credits.data ? `You're on ${credits.data.plan[0]?.toUpperCase()}${credits.data.plan.slice(1)} · ${Number(credits.data.balance)} of ${Number(credits.data.allowance)} credits left today` : "Your credits"}
+            {credits.data ? `You're on ${credits.data.plan[0]?.toUpperCase()}${credits.data.plan.slice(1)} · ${Math.round(Number(credits.data.balance) * 100) / 100} of ${Number(credits.data.allowance)} credits left today` : "Your credits"}
           </p>
           <p className="mt-3 text-muted-foreground">How credits are used:</p>
           <ul className="mt-2 space-y-1 text-muted-foreground">

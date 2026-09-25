@@ -164,7 +164,7 @@ function SettingsPage() {
       <Section label="Account">
         <Row icon={UserRound} label="Profile" sub="Name and photo" onClick={() => setView("profile")} />
         <Row icon={Mail} label="Email" sub={email} />
-        <Row icon={Plus} label="Subscription" value={credits.data ? `${credits.data.plan[0]?.toUpperCase()}${credits.data.plan.slice(1)} · ${Number(credits.data.balance)} credits` : "Free"} onClick={() => void navigate({ to: "/upgrade" })} />
+        <Row icon={Plus} label="Subscription" value={credits.data ? `${credits.data.plan[0]?.toUpperCase()}${credits.data.plan.slice(1)} · ${Math.round(Number(credits.data.balance) * 100) / 100} credits` : "Free"} onClick={() => void navigate({ to: "/upgrade" })} />
         <button type="button" onClick={() => void navigate({ to: "/upgrade" })} className="flex w-full items-center gap-3 px-4 py-3 text-left text-primary transition-colors hover:bg-foreground/5">
           <Sparkle className="size-5 shrink-0" /><span className="text-[15px]">Upgrade to Plus</span>
         </button>
