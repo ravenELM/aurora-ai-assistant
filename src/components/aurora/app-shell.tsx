@@ -37,6 +37,7 @@ import {
 } from "@/lib/aurora.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
+import auroraIcon from "@/assets/aurora-icon.png";
 
 type Conversation = {
   id: string;
@@ -158,7 +159,7 @@ export function AppShell({
   const sidebar = (
     <aside className="relative flex h-full w-full flex-col bg-sidebar text-sidebar-foreground">
       <div className="flex items-center justify-between px-4 pb-3 pt-[max(env(safe-area-inset-top),1rem)] md:px-5 md:pb-4 md:pt-[max(env(safe-area-inset-top),1.25rem)]">
-        <div className="grid size-8 place-items-center rounded-full border border-sidebar-foreground text-xs font-semibold md:size-9 md:text-sm">A</div>
+        <img src={auroraIcon} alt="Aurora" className="size-8 object-contain md:size-9" />
         <div className="flex gap-1">
           <button
             type="button"
