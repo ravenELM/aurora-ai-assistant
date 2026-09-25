@@ -85,8 +85,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
+      { title: "Aurora — your all-in-one AI assistant" },
+      { name: "description", content: "Chat with Aurora to run your calendar, inbox and favourite apps in one place." },
       { name: "author", content: "Aurora" },
       { property: "og:title", content: "Aurora — your all-in-one AI assistant" },
       { property: "og:description", content: "Chat with Aurora to run your calendar, inbox and favourite apps in one place." },
