@@ -89,7 +89,7 @@ function SettingsPage() {
     setViewRaw(next);
     window.scrollTo({ top: 0 });
   };
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState<string | null>(null);
   const credits = useCredits();
   const [accent, setAccent] = useState("default");
   const [accentOpen, setAccentOpen] = useState(false);
@@ -101,10 +101,47 @@ function SettingsPage() {
     void supabase.auth.getUser().then(({ data }) => setEmail(data.user?.email ?? ""));
   }, []);
 
-  const name = settings.data?.profile?.display_name || email.split("@")[0] || "Aurora user";
+  const avatarUrl = settings.data?.profile?.avatar_signed ?? null;
+  const [avatarReady, setAvatarReady] = useState(false);
+  useEffect(() => {
+    setAvatarReady(false);
+    if (!avatarUrl) return;
+    const image = new Image();
+    image.onload = () => setAvatarReady(true);
+    image.src = avatarUrl;
+    return () => {
+      image.onload = null;
+    };
+  }, [avatarUrl]);
+
+  const accountLoading = settings.isPending || credits.isPending || email === null || Boolean(avatarUrl && !avatarReady);
+  const name = settings.data?.profile?.display_name || email?.split("@")[0] || "Aurora user";
   const s = settings.data?.settings;
   const refresh = () => qc.invalidateQueries({ queryKey: ["settings"] });
   const back = () => setView(view === "library" ? "plugins" : "home");
+
+  if (accountLoading) {
+    return (
+      <Page id="loading">
+        <div className="relative flex items-center justify-center py-2">
+          <h1 className="text-base font-semibold">Settings</h1>
+          <Link to="/chat" search={{}} aria-label="Close settings" className="absolute right-0 grid size-10 place-items-center rounded-full bg-secondary">
+            <X className="size-5" />
+          </Link>
+        </div>
+        <div className="mt-4 flex min-h-28 flex-col items-center gap-3" aria-label="Loading settings">
+          <div className="size-20 animate-pulse rounded-full bg-muted" />
+          <div className="h-6 w-28 animate-pulse rounded-md bg-muted" />
+        </div>
+        <div className="mt-7 space-y-3">
+          <div className="h-4 w-28 animate-pulse rounded bg-muted" />
+          <div className="h-36 animate-pulse rounded-2xl bg-secondary" />
+          <div className="h-4 w-20 animate-pulse rounded bg-muted" />
+          <div className="h-48 animate-pulse rounded-2xl bg-secondary" />
+        </div>
+      </Page>
+    );
+  }
 
   if (view !== "home" && view !== "profile") {
     const titles: Record<Exclude<View, "home">, string> = {
@@ -139,7 +176,6 @@ function SettingsPage() {
     );
   }
 
-  const avatarUrl = settings.data?.profile?.avatar_signed ?? null;
   return (
     <>
     <Page id="home" dir={dir}>
@@ -151,7 +187,6 @@ function SettingsPage() {
       </div>
       <ProfileIdentity
         avatarUrl={avatarUrl}
-        loading={!settings.data}
         name={name}
         onClick={() => setView("profile")}
       />
@@ -212,37 +247,13 @@ function SettingsPage() {
   );
 }
 
-function ProfileIdentity({ avatarUrl, loading, name, onClick }: { avatarUrl: string | null; loading: boolean; name: string; onClick: () => void }) {
-  const [avatarReady, setAvatarReady] = useState(false);
-
-  useEffect(() => {
-    setAvatarReady(false);
-    if (!avatarUrl) return;
-    const image = new Image();
-    image.onload = () => setAvatarReady(true);
-    image.src = avatarUrl;
-    return () => {
-      image.onload = null;
-    };
-  }, [avatarUrl]);
-
-  const waiting = loading || Boolean(avatarUrl && !avatarReady);
-
+function ProfileIdentity({ avatarUrl, name, onClick }: { avatarUrl: string | null; name: string; onClick: () => void }) {
   return (
-    <div className="mt-4 flex min-h-28 flex-col items-center gap-3" aria-busy={waiting}>
-      {waiting ? (
-        <>
-          <div className="size-20 animate-pulse rounded-full bg-muted" />
-          <div className="h-6 w-28 animate-pulse rounded-md bg-muted" />
-        </>
-      ) : (
-        <>
-          <button type="button" onClick={onClick} className="grid size-20 place-items-center overflow-hidden rounded-full bg-primary text-3xl font-semibold text-primary-foreground">
-            {avatarUrl ? <img src={avatarUrl} alt="" className="size-full object-cover" /> : name[0]?.toUpperCase()}
-          </button>
-          <p className="text-lg font-semibold">{name}</p>
-        </>
-      )}
+    <div className="mt-4 flex min-h-28 flex-col items-center gap-3">
+      <button type="button" onClick={onClick} className="grid size-20 place-items-center overflow-hidden rounded-full bg-primary text-3xl font-semibold text-primary-foreground">
+        {avatarUrl ? <img src={avatarUrl} alt="" className="size-full object-cover" /> : name[0]?.toUpperCase()}
+      </button>
+      <p className="text-lg font-semibold">{name}</p>
     </div>
   );
 }
