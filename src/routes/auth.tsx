@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { Loader2, Mail } from "lucide-react";
@@ -244,7 +244,14 @@ function AuthPage() {
                   ? "Already have an account? Sign in"
                   : "New here? Create an account"}
               </button>
+              <p className="mt-4 text-center text-[11px] leading-relaxed text-muted-foreground">
+                By continuing you confirm you're at least 16 and agree to the{" "}
+                <Link to="/legal/$slug" params={{ slug: "terms" }} className="underline">Terms</Link>,{" "}
+                <Link to="/legal/$slug" params={{ slug: "acceptable-use" }} className="underline">Acceptable Use Policy</Link> and{" "}
+                <Link to="/legal/$slug" params={{ slug: "privacy" }} className="underline">Privacy Policy</Link>.
+              </p>
             </>
+
           )}
         </div>
       </div>

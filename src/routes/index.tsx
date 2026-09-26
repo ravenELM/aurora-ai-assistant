@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import AnimatedGradientBackground from "@/components/ui/animated-gradient-background";
@@ -84,6 +84,11 @@ function Landing() {
           <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
         </button>
       </div>
+      <nav className="absolute inset-x-0 bottom-[max(env(safe-area-inset-bottom),1rem)] z-10 flex justify-center gap-4 text-[11px] text-muted-foreground">
+        <Link to="/legal/$slug" params={{ slug: "terms" }} className="hover:text-foreground">Terms</Link>
+        <Link to="/legal/$slug" params={{ slug: "privacy" }} className="hover:text-foreground">Privacy</Link>
+        <Link to="/legal" className="hover:text-foreground">Legal</Link>
+      </nav>
     </main>
   );
 }
