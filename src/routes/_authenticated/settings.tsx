@@ -149,12 +149,12 @@ function SettingsPage() {
           <X className="size-5" />
         </Link>
       </div>
-      <div className="mt-4 flex flex-col items-center gap-3">
-        <button type="button" onClick={() => setView("profile")} className="grid size-20 place-items-center overflow-hidden rounded-full bg-primary text-3xl font-semibold text-primary-foreground">
-          {avatarUrl ? <img src={avatarUrl} alt="" className="size-full object-cover" /> : name[0]?.toUpperCase()}
-        </button>
-        <p className="text-lg font-semibold">{name}</p>
-      </div>
+      <ProfileIdentity
+        avatarUrl={avatarUrl}
+        loading={!settings.data}
+        name={name}
+        onClick={() => setView("profile")}
+      />
 
       <Section label="Customize Aurora">
         <Row icon={UserRound} label="Personalization" onClick={() => setView("personalization")} />
@@ -209,6 +209,41 @@ function SettingsPage() {
       <ProfileView title="Profile" onBack={() => setView("home")} initial={settings.data.profile?.display_name ?? ""} avatar={avatarUrl} onSaved={refresh} />
     )}
     </>
+  );
+}
+
+function ProfileIdentity({ avatarUrl, loading, name, onClick }: { avatarUrl: string | null; loading: boolean; name: string; onClick: () => void }) {
+  const [avatarReady, setAvatarReady] = useState(false);
+
+  useEffect(() => {
+    setAvatarReady(false);
+    if (!avatarUrl) return;
+    const image = new Image();
+    image.onload = () => setAvatarReady(true);
+    image.src = avatarUrl;
+    return () => {
+      image.onload = null;
+    };
+  }, [avatarUrl]);
+
+  const waiting = loading || Boolean(avatarUrl && !avatarReady);
+
+  return (
+    <div className="mt-4 flex min-h-28 flex-col items-center gap-3" aria-busy={waiting}>
+      {waiting ? (
+        <>
+          <div className="size-20 animate-pulse rounded-full bg-muted" />
+          <div className="h-6 w-28 animate-pulse rounded-md bg-muted" />
+        </>
+      ) : (
+        <>
+          <button type="button" onClick={onClick} className="grid size-20 place-items-center overflow-hidden rounded-full bg-primary text-3xl font-semibold text-primary-foreground">
+            {avatarUrl ? <img src={avatarUrl} alt="" className="size-full object-cover" /> : name[0]?.toUpperCase()}
+          </button>
+          <p className="text-lg font-semibold">{name}</p>
+        </>
+      )}
+    </div>
   );
 }
 
