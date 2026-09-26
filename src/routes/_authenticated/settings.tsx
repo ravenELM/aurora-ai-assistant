@@ -688,3 +688,45 @@ function PluginsView({ library, openLibrary }: { library: boolean; openLibrary: 
     </div>
   );
 }
+
+function PrivacySection() {
+  const navigate = useNavigate();
+  const exportFn = useServerFn(exportMyData);
+  const deleteFn = useServerFn(deleteMyAccount);
+  const [busy, setBusy] = useState<"export" | "delete" | null>(null);
+
+  const download = async () => {
+    setBusy("export");
+    try {
+      const json = await exportFn();
+      const url = URL.createObjectURL(new Blob([json], { type: "application/json" }));
+      const a = document.createElement("a");
+      a.href = url; a.download = "aurora-my-data.json"; a.click();
+      URL.revokeObjectURL(url);
+    } catch { toast.error("Couldn't export your data."); }
+    setBusy(null);
+  };
+
+  const remove = async () => {
+    const typed = window.prompt("This permanently deletes your account, chats, memories, files and connected apps. Active subscriptions should be cancelled first. Type DELETE to confirm.");
+    if (typed !== "DELETE") return;
+    setBusy("delete");
+    try {
+      await deleteFn();
+      await supabase.auth.signOut();
+      toast.success("Your account was deleted.");
+      void navigate({ to: "/" });
+    } catch { toast.error("Couldn't delete your account."); setBusy(null); }
+  };
+
+  return (
+    <Section label="Privacy & legal">
+      <Row icon={Lock} label="Legal & policies" onClick={() => void navigate({ to: "/legal" })} />
+      <Row icon={Mail} label="GDPR data request" onClick={() => void navigate({ to: "/legal/data-request" })} />
+      <Row icon={BookOpen} label={busy === "export" ? "Preparing…" : "Download my data"} onClick={download} />
+      <button type="button" disabled={busy !== null} onClick={remove} className="flex w-full items-center gap-3 px-4 py-3 text-left text-destructive transition-colors hover:bg-foreground/5 disabled:opacity-60">
+        <Trash2 className="size-5 shrink-0" /><span className="text-[15px]">{busy === "delete" ? "Deleting…" : "Delete account"}</span>
+      </button>
+    </Section>
+  );
+}
