@@ -41,6 +41,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 import { useCredits } from "@/lib/credits";
 import { ACCENTS, applyAccent, GeneralView, SecurityView } from "@/components/aurora/settings-extra";
+import { exportMyData, deleteMyAccount } from "@/lib/privacy.functions";
 
 export const Route = createFileRoute("/_authenticated/settings")({
   head: () => ({
@@ -232,6 +233,7 @@ function SettingsPage() {
         <Row icon={CircleHelp} label="Help Center" />
         <Row icon={Info} label="About" />
       </Section>
+      <PrivacySection />
       <button
         type="button"
         onClick={async () => { await supabase.auth.signOut(); void navigate({ to: "/" }); }}
