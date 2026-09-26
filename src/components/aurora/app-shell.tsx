@@ -287,7 +287,7 @@ export function AppShell({
       {menuConv && (
         <div className="fixed inset-0 z-[70]">
           <button type="button" aria-label="Close chat actions" className="absolute inset-0 bg-background/60" onClick={() => setMenuConv(null)} />
-          <div className="absolute inset-x-3 bottom-[max(env(safe-area-inset-bottom),0.75rem)] rounded-2xl border border-border bg-popover p-1 shadow-2xl animate-scale-in md:inset-x-auto md:bottom-auto md:left-1/2 md:top-1/2 md:w-64 md:-translate-x-1/2 md:-translate-y-1/2">
+          <div className="absolute bottom-[max(env(safe-area-inset-bottom),0.75rem)] right-3 w-44 rounded-2xl border border-border bg-popover p-1 shadow-2xl animate-scale-in md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:w-48 md:-translate-x-1/2 md:-translate-y-1/2">
             <p className="truncate px-2.5 pb-0.5 pt-1 text-[10px] text-muted-foreground">{menuConv.title}</p>
             <ChatAction icon={Share2} label="Share" onClick={() => void shareChat(menuConv)} />
             <ChatAction icon={Pencil} label="Rename" onClick={() => { setRenameValue(menuConv.title); setRenameConv(menuConv); setMenuConv(null); }} />
