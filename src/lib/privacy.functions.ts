@@ -9,7 +9,7 @@ export const exportMyData = createServerFn({ method: "GET" })
     const out: Record<string, unknown> = { exported_at: new Date().toISOString(), user_id: context.userId };
     const sb = context.supabase as unknown as { from: (t: string) => any };
     const profile = await sb.from("profiles").select("*").eq("id", context.userId);
-    out.profiles = profile.data ?? [];
+    out["profiles"] = profile.data ?? [];
     for (const t of USER_TABLES) {
       const { data } = await sb.from(t).select("*").eq("user_id", context.userId);
       out[t] = data ?? [];
