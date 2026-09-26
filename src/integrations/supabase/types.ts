@@ -44,6 +44,36 @@ export type Database = {
         }
         Relationships: []
       }
+      data_requests: {
+        Row: {
+          created_at: string
+          details: string | null
+          email: string | null
+          id: string
+          request_type: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          details?: string | null
+          email?: string | null
+          id?: string
+          request_type: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          details?: string | null
+          email?: string | null
+          id?: string
+          request_type?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       memories: {
         Row: {
           content: string
