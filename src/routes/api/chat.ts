@@ -152,7 +152,7 @@ export const Route = createFileRoute("/api/chat")({
 
         const { data: creditRows } = await supabase.rpc("get_credits");
         const credit = Array.isArray(creditRows) ? creditRows[0] : null;
-        const baseCost = 0.01;
+        const baseCost = 0.03;
         if (credit && Number(credit.balance) < baseCost) {
           const lines = [
             { type: "error", code: "out_of_credits", message: "You're out of credits. Upgrade your plan or wait for your daily refill." },
@@ -511,8 +511,8 @@ function shrinkToolOutput(value: unknown): unknown {
   return { truncated: true, data: text.slice(0, MAX_TOTAL) };
 }
 
-// Token-based pricing (credits per 1k tokens). Smart costs 2x quick.
-// Each app/tool call +0.1, image +2. Minimum 0.01, max 20 per message.
+// Token-based pricing (credits per 1k tokens), increased 3x. Smart costs 2x quick.
+// Each app/tool call +0.3, image +6. Minimum 0.03, max 20 per message.
 function creditCost(
   kind: "fast" | "smart",
   toolCalls: number,
@@ -521,7 +521,7 @@ function creditCost(
   outputTokens = 0,
 ): number {
   const mult = kind === "fast" ? 1 : 2;
-  const tokens = (inputTokens / 1000) * 0.02 + (outputTokens / 1000) * 0.1;
-  const c = tokens * mult + Math.min(toolCalls, 10) * 0.1 + (image ? 2 : 0);
-  return Math.min(Math.max(Math.round(c * 100) / 100, 0.01), 20);
+  const tokens = (inputTokens / 1000) * 0.06 + (outputTokens / 1000) * 0.3;
+  const c = tokens * mult + Math.min(toolCalls, 10) * 0.3 + (image ? 6 : 0);
+  return Math.min(Math.max(Math.round(c * 100) / 100, 0.03), 20);
 }
