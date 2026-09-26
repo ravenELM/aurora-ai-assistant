@@ -1,15 +1,34 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate, useRouter } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import type { ReactNode } from "react";
 import { openCookieSettings } from "./cookie-banner";
+import { Button } from "@/components/ui/button";
 
 export function LegalLayout({ title, updated, children }: { title: string; updated?: string; children: ReactNode }) {
+  const router = useRouter();
+  const navigate = useNavigate();
+
+  const goBack = () => {
+    if (router.history.canGoBack()) {
+      router.history.back();
+      return;
+    }
+    void navigate({ to: "/" });
+  };
+
   return (
     <main className="min-h-screen bg-background px-5 py-8 text-foreground">
       <div className="mx-auto max-w-2xl">
-        <Link to="/legal" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground">
-          <ArrowLeft className="size-4" /> Legal center
-        </Link>
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          onClick={goBack}
+          aria-label="Go back"
+          className="-ml-2 gap-1.5 px-2 text-sm text-muted-foreground hover:text-foreground"
+        >
+          <ArrowLeft className="size-4" /> Back
+        </Button>
         <h1 className="mt-6 text-3xl font-semibold tracking-tight">{title}</h1>
         {updated && <p className="mt-2 text-xs text-muted-foreground">Last updated: {updated}</p>}
         <div className="mt-8">{children}</div>

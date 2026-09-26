@@ -172,3 +172,25 @@
 @utility animate-scale-in {
   animation: scale-in 0.18s ease-out;
 }
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-transition {
+  min-height: 100dvh;
+  animation: page-enter 220ms ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-transition {
+    animation: none;
+  }
+}

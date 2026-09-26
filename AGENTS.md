@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Page-to-page motion is applied once at the root outlet and keyed by pathname, so all routes transition consistently without remounting on query-string changes.
