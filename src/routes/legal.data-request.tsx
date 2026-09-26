@@ -32,7 +32,7 @@ const TYPES = [
 type Req = { id: string; request_type: string; status: string; created_at: string };
 
 function DataRequestPage() {
-  const [user, setUser] = useState<{ id: string; email?: string } | null | undefined>(undefined);
+  const [user, setUser] = useState<{ id: string; email: string | undefined } | null | undefined>(undefined);
   const [type, setType] = useState<string>("access");
   const [details, setDetails] = useState("");
   const [busy, setBusy] = useState(false);
@@ -56,7 +56,7 @@ function DataRequestPage() {
     setBusy(true);
     const { error } = await supabase.from("data_requests" as never).insert({ user_id: user.id, email: user.email, request_type: type, details: details.slice(0, 2000) } as never);
     setBusy(false);
-    if (error) return toast.error("Couldn't send your request.");
+    if (error) { toast.error("Could not send your request."); return; }
     toast.success("Request received. We'll reply within one month.");
     setDetails("");
     void load();
